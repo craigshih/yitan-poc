@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>一碳究竟｜PoC 互動原型</title>
+<style>
+:root{--paper:#f4f1ea;--panel:#fbf9f4;--ink:#14110f;--mute:#6f6a62;--line:#d8d2c4;--green:#1f4d3a;--brass:#a8843f;--red:#9c2f1f;--teal:var(--green);--amber:var(--brass);--serif:"Songti TC","Noto Serif TC","PMingLiU",serif}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.7 "PingFang TC","Noto Sans TC","Microsoft JhengHei",system-ui,sans-serif}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
+@media(min-width:768px){.wrap{padding:0 32px}}
+@media(min-width:1440px){.wrap{max-width:1320px}}
+@media(min-width:1600px){.wrap{max-width:1440px}}
+@media(min-width:1760px){.wrap{max-width:1480px}}
+@media(min-width:1900px){.wrap{max-width:1600px}#app{zoom:1.1}}
+@media(min-width:2200px){#app{zoom:1.25}}
+@media(min-width:3000px){#app{zoom:1.6}}
+header{background:var(--ink);color:var(--paper);position:sticky;top:0;z-index:5}
+.bar{display:flex;align-items:center;gap:8px 24px;flex-wrap:wrap;padding-top:14px;padding-bottom:14px}
+.logo{font-family:var(--serif);font-size:22px;font-weight:700;letter-spacing:.14em}
+.logo span{font:11px/1 "PingFang TC",sans-serif;letter-spacing:.22em;color:var(--brass);margin-left:10px}
+nav{display:flex;gap:18px;margin-left:auto}
+nav button{border:0;border-bottom:1px solid transparent;background:none;padding:6px 0;font:inherit;font-size:14px;letter-spacing:.14em;color:#b9b2a4;cursor:pointer}
+nav button[aria-selected=true]{color:#fff;border-color:var(--brass)}
+.poc{border-top:1px solid #2c2824;color:#b9b2a4;font-size:12px;letter-spacing:.04em;padding:6px 16px;text-align:center}
+.hero{background:var(--ink);color:var(--paper);padding:52px 0 60px;border-top:1px solid #2c2824}
+.eyebrow{font-size:12px;letter-spacing:.3em;color:var(--brass)}
+.hero h1{font-family:var(--serif);font-size:clamp(34px,5.4vw,76px);line-height:1.2;margin:14px 0 18px;letter-spacing:.05em}
+.hero h1 em{font-style:normal;color:var(--brass);display:inline-block}
+.hero p{color:#cfc8ba;max-width:44ch;font-size:16px}
+.btn{display:inline-block;border:1px solid currentColor;background:none;color:inherit;padding:11px 26px;font:inherit;letter-spacing:.14em;cursor:pointer;margin:18px 12px 0 0}
+.btn.solid,.btn:hover{background:var(--paper);color:var(--ink);border-color:var(--paper)}
+main.wrap{padding-top:48px;padding-bottom:60px}
+h1{font-family:var(--serif);font-size:30px;letter-spacing:.06em;margin:6px 0 8px;line-height:1.3}
+h2{font-family:var(--serif);font-size:18px;letter-spacing:.08em;margin:0 0 12px;padding-bottom:10px;border-bottom:1px solid var(--ink)}
+p{max-width:60ch;margin:0 0 10px}.mute{color:var(--mute);font-size:13px}
+.card{background:var(--panel);border:1px solid var(--line);padding:22px;margin-bottom:22px}
+.grid{display:grid;gap:22px;grid-template-columns:1fr;margin-top:26px}
+@media(min-width:1000px){.grid.admin{grid-template-columns:320px minmax(0,1fr) 360px;align-items:start}.grid.ai{grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:start}}
+.step{display:flex;width:100%;gap:10px;align-items:baseline;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:11px 4px;font:inherit;color:inherit;cursor:pointer}
+.step:hover,.step:focus-visible{background:#ebe6da;outline:0}
+.step.hit{background:var(--ink);color:var(--paper)}.step.hit .tag{color:var(--paper)}
+.step .no{font-family:var(--serif);color:var(--brass);width:22px;flex:none}
+.step b{font-weight:500;flex:1}
+.tag{font-size:11px;letter-spacing:.08em;padding:1px 7px;border:1px solid currentColor;color:var(--green);white-space:nowrap}
+.tag.tcx{color:var(--ink)}.tag.bad{color:var(--red)}.tag.warn{color:var(--brass)}
+.primary{background:var(--ink);color:var(--paper);border:1px solid var(--ink);padding:9px 16px;font:inherit;letter-spacing:.12em;cursor:pointer;width:100%;margin-bottom:10px}
+.stack{display:flex;height:10px;overflow:hidden;background:#e4dfd3;margin:10px 0}
+.stack span{transition:width .5s}
+.lg{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--mute)}.lg i{display:inline-block;width:9px;height:9px;margin-right:5px}
+.ret{border-top:1px solid var(--line);padding-top:10px;margin-top:10px;font-size:13.5px}
+.code{font-family:ui-monospace,Menlo,monospace;font-size:12px;word-break:break-all}
+.log{max-height:640px;overflow:auto}
+@media(min-width:1000px){.grid.admin>:nth-child(n+2){position:sticky;top:104px}.log{max-height:calc(100vh - 200px)}}
+.ev{border-left:2px solid var(--green);padding:8px 12px;margin-bottom:10px;font-size:13px;animation:in .5s}
+.ev.no{border-color:var(--red);background:#f1e2dc}
+@keyframes in{from{opacity:0;transform:translateY(-6px)}}
+.phone{max-width:440px;margin:0 auto}
+.cert{background:#fff;border:1px solid var(--ink);outline:1px solid var(--ink);outline-offset:-6px;padding:30px 26px}
+.cert h1{font-size:26px}
+dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:14px 0 0;font-size:13.5px;border-top:1px solid var(--line);padding-top:12px}dt{color:var(--mute)}dd{margin:0;text-align:right;word-break:break-word}
+.tl{list-style:none;margin:0;padding:0}.tl li{position:relative;padding:0 0 14px 24px;font-size:13.5px}
+.tl li:before{content:"";position:absolute;left:3px;top:8px;width:9px;height:9px;background:var(--green)}
+.tl li:after{content:"";position:absolute;left:7px;top:20px;bottom:-6px;width:1px;background:var(--line)}.tl li:last-child:after{display:none}
+input,select{font:inherit;padding:9px 10px;border:1px solid var(--ink);border-radius:0;width:100%;background:#fff;color:inherit}
+.row{display:flex;gap:8px}.row button{white-space:nowrap;width:auto;margin:0}
+.ok{border-left:2px solid var(--green);background:#e6ece4;color:var(--green);padding:9px 12px;margin-top:8px;font-size:13.5px}
+.err{border-left:2px solid var(--red);background:#f1e2dc;color:var(--red);padding:9px 12px;margin-top:8px;font-size:13.5px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}.chips button{border:1px solid var(--ink);background:none;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer;color:inherit}
+.chips button:hover{background:var(--ink);color:var(--paper)}
+.kpis{display:grid;grid-template-columns:repeat(2,1fr);gap:22px}@media(min-width:600px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{border-top:2px solid var(--ink);padding-top:10px;font-size:13px;color:var(--mute)}.kpi b{display:block;font-family:var(--serif);font-size:42px;line-height:1.2;color:var(--ink)}
+.tblw{overflow-x:auto}table{border-collapse:collapse;width:100%;font-size:13px}th,td{padding:7px 8px;border-bottom:1px solid var(--line);text-align:left;white-space:nowrap}th{color:var(--mute);font-weight:500;letter-spacing:.06em;border-bottom-color:var(--ink)}
+svg{max-width:100%;height:auto;display:block}
+footer{border-top:1px solid var(--ink);padding:22px 0 40px;font-size:12.5px;color:var(--mute)}footer p{max-width:70ch}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div id="app">
+<header><div class="wrap bar">
+  <div class="logo">一碳究竟<span>PROOF OF CARBON</span></div>
+  <nav role="tablist">
+    <button role="tab" data-v="admin">模擬後台</button>
+    <button role="tab" data-v="verify">公開查驗</button>
+    <button role="tab" data-v="ai">AI 預警</button>
+  </nav>
+</div>
+<div class="poc">PoC 模擬資料｜規則引擎、簽章驗證與雜湊承諾皆於瀏覽器實際運算｜不代表真實碳權發行、交易或法律權利</div>
+</header>
+<div class="hero" id="hero"><div class="wrap">
+  <div class="eyebrow">POC 互動原型 · 碳克車</div>
+  <h1>一噸，<em>只被宣告一次</em>。</h1>
+  <p>把碳權全生命週期的官方紀錄，寫成任何人都能查驗的證據鏈。每一筆操作都經機關金鑰簽章、送進規則引擎；違規的，當場被拒絕。</p>
+  <button class="btn solid" id="runAct1">依序執行第一幕</button><button class="btn" data-v="verify">前往公開查驗</button>
+</div></div>
+<main class="wrap">
+
+<section id="v-admin">
+  <div class="eyebrow">CONSOLE</div><h1>模擬後台：環境部與碳交所的八項操作</h1>
+  <p class="mute">每個按鈕都會以該機關的金鑰簽章後送進規則引擎；順序錯了、金鑰錯了、數量超了，都會被當場拒絕。</p>
+  <div class="grid admin">
+    <div>
+      <div class="card"><h2>第一幕：自願減量額度</h2>
+        <div id="steps1"></div></div>
+      <div class="card"><h2>第二幕：先期額度</h2><div id="steps2"></div></div>
+      <div class="card"><h2>七個失敗案例</h2><p class="mute">請先完成第一幕。</p><div id="fails"></div></div>
+    </div>
+    <div id="state"></div>
+    <div class="card"><h2>事件紀錄（雜湊鏈）</h2><div class="log" id="log"><p class="mute">尚無事件。</p></div></div>
+  </div>
+</section>
+
+<section id="v-verify" hidden><div class="phone" id="verify"></div></section>
+
+<section id="v-ai" hidden>
+  <div class="eyebrow">ANOMALY WATCH</div><h1>AI-2 防漂綠預警：孤立森林＋規則</h1>
+  <p class="mute">本頁於瀏覽器即時產生合成資料並訓練模型（單一隨機種子），用來展示流程；正式評估數字（20 組種子平均）見企劃書表 11。AI 只排序與提示，不攔截、不認定違規。</p>
+  <div class="row" style="max-width:340px;margin-bottom:14px"><input id="seed" type="number" value="1" aria-label="隨機種子"><button class="primary" id="runAi">重新產生並偵測</button></div>
+  <div id="ai"></div>
+</section>
+</main>
+<footer><div class="wrap"><p>第一階段｜瀏覽器端原型：五條規則、機關簽章驗證、事件雜湊鏈與承諾值皆為實際運算。第二階段｜同一套規則以 Solidity 部署至 Sepolia 測試網，查驗頁改為直接讀鏈。所有資料均為模擬，不代表真實碳權發行、交易或法律權利。</p></div></footer>
+</div>
+
+<!-- shortcut: QR 產生器走 CDN，離線時改顯示文字連結；要離線展示再把函式庫內嵌 -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s), enc=s=>new TextEncoder().encode(s);
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const sha=async s=>hex(await crypto.subtle.digest('SHA-256',enc(s)));
+const short=h=>'0x'+h.slice(0,6)+'…'+h.slice(-4);
+const ALG={name:'ECDSA',hash:'SHA-256'}, ROLE={MOENV:'環境部',TCX:'碳交所'};
+// 每項操作的法定簽章機關（對應企劃書圖 2）
+const REQ={registerProject:'MOENV',issue:'MOENV',list:'TCX',trade:'TCX',negotiate:'MOENV',retire:'MOENV',publish:'MOENV',attribute:'TCX'};
+const S={projects:{},batches:{},rets:{},events:[],nonce:0,prev:'0'.repeat(64)}, K={};
+
+// ---- 規則引擎：回傳字串＝拒絕原因；回傳 undefined＝已寫入狀態 ----
+const OPS={
+ registerProject(p){ if(S.projects[p.id])return '專案已註冊'; S.projects[p.id]=p },
+ issue(p){
+  if(!S.projects[p.project])return '核發被拒：專案尚未註冊';
+  for(const b of Object.values(S.batches)) if(p.from<=b.to&&p.to>=b.from)return '此序號已登記（規則①序號唯一）';
+  S.batches[p.batch]={...p,type:S.projects[p.project].type,avail:p.tons,moved:{},retired:0,listed:false}
+ },
+ list(p){ const b=S.batches[p.batch]; if(!b)return '批次不存在';
+  if(b.type==='early')return '先期專案額度僅得協議交易（規則②・交易辦法第 10 條）';
+  if(b.listed)return '此序號已登記（規則①序號唯一）'; b.listed=true },
+ trade(p){ const b=S.batches[p.batch]; if(!b)return '批次不存在';
+  if(p.seller)return '此額度已移轉過一次，只能註銷（規則③・第 26 條）';
+  if(!b.listed)return '批次尚未上架'; if(p.tons>b.avail)return '可移轉量不足';
+  b.avail-=p.tons; b.moved[p.buyer]=(b.moved[p.buyer]||0)+p.tons },
+ negotiate(p){ const b=S.batches[p.batch]; if(!b)return '批次不存在';
+  if(b.type!=='early')return '僅先期額度適用協議交易'; if(p.tons>b.avail)return '可移轉量不足';
+  b.avail-=p.tons; b.moved[p.buyer]=(b.moved[p.buyer]||0)+p.tons },
+ retire(p){ const b=S.batches[p.batch]; if(!b)return '批次不存在';
+  if(p.tons>(b.moved[p.holder]||0))return '可註銷量不足：已銷毀的額度不可再使用（規則④）';
+  b.moved[p.holder]-=p.tons; b.retired+=p.tons;
+  S.rets[p.id]={...p,published:false,attributed:0,commits:[]} },
+ publish(p){ const r=S.rets[p.ret]; if(!r)return '註銷紀錄不存在'; r.published=true },
+ attribute(p){ const r=S.rets[p.ret]; if(!r)return '註銷紀錄不存在';
+  if(!r.published)return '註銷用途尚未公告（規則⑤・第 27 條）';
+  if(r.purpose!=='offset')return '此註銷用途不得對外歸屬（規則⑤：碳費扣除不可再宣告）';
+  if(r.attributed+p.tons>r.tons)return `超額歸屬：剩餘可歸屬量 ${r.tons-r.attributed} 噸（規則⑤）`;
+  r.attributed+=p.tons; r.commits.push({commit:p.commit,code:p.code}) }
+};
+
+// 簽章 → 驗章 → 規則 → 雜湊鏈。forge=true 代表用非機關金鑰簽（偽造來源）。
+async function send(op,p,label,forge){
+  const body=JSON.stringify({op,p,nonce:++S.nonce});
+  const sig=await crypto.subtle.sign(ALG,(forge?K.ATTACKER:K[REQ[op]]).privateKey,enc(body));
+  const okSig=await crypto.subtle.verify(ALG,K[REQ[op]].publicKey,sig,enc(body));
+  const err=okSig?OPS[op](p):'簽章驗證失敗，紀錄不上鏈（非權責機關金鑰）';
+  const e={op,label,signer:forge?'未知金鑰':ROLE[REQ[op]],err,p,t:new Date()};
+  if(!err){e.hash=S.prev=await sha(S.prev+body)}
+  S.events.unshift(e); render(); return e;
+}
+async function attribute(ret,customer,tons){
+  const salt=hex(crypto.getRandomValues(new Uint8Array(3))).toUpperCase();
+  const code=`${customer}-${tons}-${salt}`;           // 交給客戶的驗證碼，只存鏈下
+  const commit=await sha(`${ret}|${code}`);           // 鏈上只留加鹽雜湊承諾
+  return send('attribute',{ret,tons,commit,code},`歸屬 ${customer} ${tons} 噸`);
+}
+let retSeq=1; const newRet=()=>'RET-'+String(++retSeq).padStart(3,'0');
+const V='VER-2026-001', E='EARLY-2026-001';
+const STEPS={
+ A1:['註冊自願減量專案','MOENV',()=>send('registerProject',{id:'P-VOL-01',name:'示範植林減量專案（模擬）',type:'voluntary',method:'造林與植林（模擬方法學）',vvb:'綠證查驗股份有限公司（虛構）',license:'VVB-DEMO-007',pdd:'0x5a1c…e93b'},'專案註冊：示範植林減量專案')],
+ A2:['核發 1,000 噸','MOENV',()=>send('issue',{batch:V,project:'P-VOL-01',tons:1000,from:1,to:1000,doc:'環部氣字第 DEMO-1150301 號（模擬）'},'核發 1,000 噸，序號 1–1000')],
+ A3:['上架定價交易','TCX',()=>send('list',{batch:V},'上架 '+V)],
+ A4:['綠光電子買入 100 噸','TCX',()=>send('trade',{batch:V,buyer:'綠光電子',tons:100},'成交移轉：綠光電子 100 噸')],
+ A5:['註銷 60 噸（產品碳中和宣告）','MOENV',()=>send('retire',{id:'RET-001',batch:V,holder:'綠光電子',tons:60,purpose:'offset',note:'2026 年產品碳中和宣告'},'註銷 60 噸，代幣銷毀')],
+ A6:['公告註銷用途','MOENV',()=>send('publish',{ret:'RET-001'},'用途公告：自願抵銷／碳中和宣告')],
+ A7:['歸屬 B 公司 40 噸','TCX',()=>attribute('RET-001','B公司',40)],
+ A8:['歸屬 C 公司 20 噸','TCX',()=>attribute('RET-001','C公司',20)],
+ B1:['註冊先期專案','MOENV',()=>send('registerProject',{id:'P-EARLY-01',name:'示範先期減量專案（模擬）',type:'early',method:'先期專案（模擬）'},'專案註冊：示範先期減量專案')],
+ B2:['核發先期額度 500 噸','MOENV',()=>send('issue',{batch:E,project:'P-EARLY-01',tons:500,from:1001,to:1500,doc:'環部氣字第 DEMO-1150412 號（模擬）'},'核發先期額度 500 噸')],
+ B3:['嘗試上架先期額度','TCX',()=>send('list',{batch:E},'上架 '+E)],
+ B4:['協議交易 200 噸 → 甲鋼鐵','MOENV',()=>send('negotiate',{batch:E,buyer:'甲鋼鐵（模擬）',tons:200},'協議交易：甲鋼鐵 200 噸')],
+ F1:['重複上架','TCX',()=>send('list',{batch:V},'再次上架同一序號範圍')],
+ F2:['超額歸屬','TCX',()=>attribute('RET-001','D公司',10)],
+ F3:['偽造來源','TCX',()=>send('trade',{batch:V,buyer:'不明買方',tons:50},'未持有碳交所金鑰的成交',true)],
+ F4:['先期額度上架','TCX',async()=>{if(!S.batches[E]){await STEPS.B1[2]();await STEPS.B2[2]()}return STEPS.B3[2]()}],
+ F5:['再次轉售','TCX',()=>send('trade',{batch:V,seller:'綠光電子',buyer:'D公司',tons:40},'綠光電子轉售 40 噸給 D 公司')],
+ F6:['公告前歸屬','TCX',async()=>{const id=newRet();await send('retire',{id,batch:V,holder:'綠光電子',tons:10,purpose:'offset',note:'產品碳中和宣告'},'註銷 10 噸（尚未公告）');return attribute(id,'E公司',10)}],
+ F7:['一噸兩用','TCX',async()=>{const id=newRet();await send('retire',{id,batch:V,holder:'綠光電子',tons:10,purpose:'fee',note:'碳費扣除'},'註銷 10 噸，用途：碳費扣除');await send('publish',{ret:id},'用途公告：碳費扣除');return attribute(id,'B公司',10)}]
+};
+async function run(id){
+  document.querySelectorAll('.step.hit').forEach(x=>x.classList.remove('hit'));
+  document.querySelector(`[data-s=${id}]`)?.classList.add('hit');
+  return STEPS[id][2]();
+}
+const wait=ms=>new Promise(r=>setTimeout(r,ms));
+async function act(ids,ms=0){for(const i of ids){await run(i);if(ms)await wait(ms)}}
+const ACT1=['A1','A2','A3','A4','A5','A6','A7','A8'],ACT2=['B1','B2','B3','B4'],FAILS=['F1','F2','F3','F4','F5','F6','F7'];
+
+// ---- 畫面 ----
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function stepBtns(el,ids){el.innerHTML=ids.map((i,n)=>`<button class="step" data-s="${i}"><span class="no">${n+1}</span><b>${STEPS[i][0]}</b><span class="tag ${STEPS[i][1]==='TCX'?'tcx':''}">${ROLE[STEPS[i][1]]}簽章</span></button>`).join('')}
+function render(){
+  const bs=Object.values(S.batches);
+  $('#state').innerHTML=bs.length?bs.map(b=>{
+    const mv=Object.values(b.moved).reduce((a,c)=>a+c,0),w=n=>`width:${n/b.tons*100}%`;
+    const rets=Object.values(S.rets).filter(r=>r.batch===b.batch);
+    return `<div class="card"><h2>${b.batch} <span class="tag ${b.type==='early'?'warn':''}">${b.type==='early'?'先期額度':'自願減量額度'}</span> ${b.listed?'<span class="tag tcx">已上架</span>':''}</h2>
+    <div class="mute">${esc(S.projects[b.project].name)}｜${esc(b.doc)}｜序號 ${b.from}–${b.to}</div>
+    <div class="stack"><span style="${w(b.avail)};background:#cfc8ba"></span><span style="${w(mv)};background:var(--ink)"></span><span style="${w(b.retired)};background:var(--amber)"></span></div>
+    <div class="lg"><span><i style="background:#cfc8ba"></i>可移轉 ${b.avail}</span><span><i style="background:var(--ink)"></i>已移轉（只能註銷）${mv}</span><span><i style="background:var(--amber)"></i>已註銷銷毀 ${b.retired}</span></div>
+    ${Object.entries(b.moved).filter(x=>x[1]).map(([h,n])=>`<div class="ret">持有：${esc(h)} ${n} 噸 <span class="mute">（中台託管，企業免錢包）</span></div>`).join('')}
+    ${rets.map(r=>`<div class="ret"><b>${r.id}</b>　${esc(r.holder)} 註銷 ${r.tons} 噸　<span class="tag ${r.purpose==='fee'?'warn':''}">${esc(r.note)}</span> <span class="tag ${r.published?'':'bad'}">${r.published?'用途已公告':'尚未公告'}</span>
+      <div class="stack"><span style="width:${r.attributed/r.tons*100}%;background:var(--teal)"></span></div>
+      <div class="mute">已歸屬 ${r.attributed}／${r.tons} 噸</div>
+      ${r.commits.map(c=>`<div class="code">承諾值 ${short(c.commit)}　<span class="mute">鏈下驗證碼：</span>${esc(c.code)}</div>`).join('')}</div>`).join('')}
+    </div>`}).join(''):'<div class="card"><p class="mute">尚無批次。請從左側「註冊自願減量專案」開始，或按「依序執行第一幕」。</p></div>';
+  $('#log').innerHTML=S.events.map(e=>`<div class="ev ${e.err?'no':''}"><b>${e.err?'✕ 拒絕':'✓ 已寫入'}</b>　${esc(e.label)}<br><span class="mute">${e.signer}簽章｜${e.t.toLocaleTimeString('zh-TW',{hour12:false})}</span><br>${e.err?esc(e.err):`<span class="code">${short(e.hash)}</span> <span class="mute">模擬雜湊</span>`}</div>`).join('')||'<p class="mute">尚無事件。</p>';
+  renderVerify();
+}
+
+let cert='RET-001';
+function radar(vals,labels){ // vals: 0..1 或 null（不適用）
+  const n=vals.length,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return[150+r*Math.cos(a),125+r*Math.sin(a)]};
+  const poly=r=>vals.map((_,i)=>pt(i,r).join(',')).join(' ');
+  return `<svg viewBox="0 0 300 250" role="img" aria-label="證據完整度雷達圖">${[30,60,90].map(r=>`<polygon points="${poly(r)}" fill="none" stroke="#e6e2d8"/>`).join('')}
+  <polygon points="${vals.map((v,i)=>pt(i,90*(v||0)).join(',')).join(' ')}" fill="rgba(31,77,58,.18)" stroke="#1f4d3a" stroke-width="2"/>
+  ${labels.map((l,i)=>{const[x,y]=pt(i,108);return `<text x="${x}" y="${y+4}" font-size="11" text-anchor="middle" fill="${vals[i]==null?'#aaa':'#14110f'}">${l}${vals[i]==null?'（不適用）':''}</text>`}).join('')}</svg>`;
+}
+function renderVerify(){
+  const r=S.rets[cert]; if(!r||!r.attributed){$('#verify').innerHTML='<div class="card"><h2>尚無可查驗的歸屬證書</h2><p class="mute">請先到「模擬後台」執行第一幕。</p></div>';return}
+  const b=S.batches[r.batch],pj=S.projects[b.project];
+  const url=location.origin+location.pathname+'?run=act1&view=verify'; // shortcut: 靜態原型無後端，QR 連回本頁並重跑第一幕；上鏈後改為讀鏈
+  let qr=`<a class="code" href="${url}">${url}</a>`;
+  if(window.qrcode){const q=qrcode(0,'M');q.addData(url);q.make();qr=q.createSvgTag({cellSize:3,margin:0})}
+  const evs=S.events.filter(e=>!e.err&&(e.p.id===b.project||e.p.ret===cert||(e.p.batch===r.batch&&(e.op!=='retire'||e.p.id===cert)))).reverse();
+  const ax=[pj.pdd?1:.5, pj.type==='early'?null:(pj.vvb&&pj.license?1:0), b.doc?1:0, 1, r.published?1:0, r.commits.length?1:0];
+  const gaps=['計畫書雜湊','查驗機構與許可證號','核發文號','移轉簽章','用途公告','歸屬承諾值'].filter((_,i)=>ax[i]===0);
+  $('#verify').innerHTML=`
+  <div class="card cert"><div class="eyebrow">歸屬證書　CERT-${cert}</div><h1>${r.attributed} 噸已歸屬，沒有重複宣告</h1>
+   <p>綠光電子註銷的 ${r.tons} 噸中，已歸屬 ${r.attributed} 噸給 ${r.commits.length} 位客戶；合約保證累計歸屬量不會超過註銷量。</p>
+   <dl><dt>碳權類型</dt><dd>${pj.type==='early'?'先期額度':'自願減量額度'}</dd><dt>註銷用途</dt><dd>${esc(r.note)}</dd><dt>核發文號</dt><dd>${esc(b.doc)}</dd><dt>序號範圍</dt><dd>${b.from}–${b.to}</dd><dt>查驗機構</dt><dd>${esc(pj.vvb||'—')}</dd><dt>許可證號</dt><dd>${esc(pj.license||'—')}</dd><dt>信任等級</dt><dd><span class="tag">模擬官方簽章</span></dd></dl></div>
+  <div class="card"><h2>我是品牌客戶：驗證我的那一份</h2><div style="display:flex;gap:12px;align-items:center;margin-bottom:10px"><div style="flex:none;max-width:120px">${qr}</div><p class="mute">輸入供應商給您的驗證碼。比對在您的瀏覽器內完成，驗證碼不會傳到任何伺服器。</p></div>
+   <div class="row"><input id="vcode" placeholder="例：B公司-40-A1B2C3" aria-label="驗證碼"><button class="primary" id="vbtn">比對</button></div><div id="vres"></div>
+   ${r.commits.map((c,i)=>`<div class="code mute">鏈上承諾值 #${i+1}　${short(c.commit)}</div>`).join('')}</div>
+  <div class="card"><h2>來源驗證時間軸</h2><ol class="tl">${evs.map(e=>`<li><b>${esc(e.label)}</b><br><span class="mute">${e.signer}簽章｜<span class="code">${short(e.hash)}</span></span></li>`).join('')}</ol></div>
+  <div class="card"><h2>證據完整度</h2>${radar(ax,['專案註冊','查驗機構','核發','移轉','註銷用途','歸屬'])}<div class="mute">${gaps.length?'缺口：'+gaps.join('、'):'六個證據環節皆已揭露，無缺口。'}（規則加權，非機器學習）</div></div>
+  <div class="card"><h2>查驗助理（檢索式示範，未接語言模型）</h2><div class="chips">${QA.map((q,i)=>`<button data-q="${i}">${q[0]}</button>`).join('')}<button data-q="-1">這張證書值多少錢？</button></div><div id="qa"></div></div>`;
+}
+const QA=[['這一噸有沒有被重複宣告？',()=>`沒有。註銷 ${S.rets[cert].tons} 噸、累計歸屬 ${S.rets[cert].attributed} 噸，合約不允許累計歸屬量超過註銷量。`,'出處：鏈上欄位 attributed／tons；交易辦法第 27 條'],
+ ['為什麼看不到客戶名單？',()=>'鏈上只公開總量與加鹽雜湊承諾，客戶名單與各自數量存於鏈下；客戶可用驗證碼自行比對。','出處：企劃書參、五 隱私與信任設計'],
+ ['碳費扣除的額度可以拿來宣告嗎？',()=>'不行。用途為碳費扣除的註銷量不得對外歸屬，合約會拒絕。','出處：規則⑤；交易辦法第 27 條']];
+document.addEventListener('click',async ev=>{
+  const t=ev.target.closest('button'); if(!t)return;
+  if(t.dataset.s)run(t.dataset.s);
+  if(t.dataset.v)view(t.dataset.v);
+  if(t.id==='runAct1'){$('#v-admin').scrollIntoView({behavior:'smooth'});act(ACT1,500)}
+  if(t.id==='runAi')runAi(+$('#seed').value||1);
+  if(t.id==='vbtn')checkCode();
+  if(t.dataset.q){const q=QA[t.dataset.q];$('#qa').innerHTML=q?`<div class="ok">${q[1]()}<br><span class="mute">${q[2]}</span></div>`:'<div class="err">知識庫中找不到依據，無法回答。本助理不提供價格或法律意見。</div>'}
+});
+async function checkCode(){
+  const code=$('#vcode').value.trim(),h=await sha(`${cert}|${code}`),hit=S.rets[cert].commits.find(c=>c.commit===h),[who,tons]=code.split('-');
+  $('#vres').innerHTML=hit?`<div class="ok">✓ 吻合鏈上承諾值 ${short(h)}：${esc(who)} 的 ${esc(tons)} 噸確實在這筆註銷之內。</div>`:'<div class="err">✕ 與鏈上任何承諾值都不吻合，請向供應商確認驗證碼。</div>';
+}
+function view(v){for(const x of['admin','verify','ai'])$('#v-'+x).hidden=x!==v;$('#hero').hidden=v!=='admin';document.querySelectorAll('nav button').forEach(b=>b.setAttribute('aria-selected',b.dataset.v===v));if(v==='ai'&&!$('#ai').innerHTML)runAi(1);scrollTo(0,0)}
+
+// ---- AI-2：孤立森林＋規則（瀏覽器端重新實作，僅供展示流程） ----
+function rng(a){return()=>{a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function iforest(X,R,trees=100,psi=256){
+  const c=n=>n<2?0:2*(Math.log(n-1)+.5772)-2*(n-1)/n, lim=Math.ceil(Math.log2(psi));
+  const build=(rows,d)=>{if(d>=lim||rows.length<2)return{n:rows.length};const f=R()*X[0].length|0;let lo=Infinity,hi=-Infinity;for(const i of rows){lo=Math.min(lo,X[i][f]);hi=Math.max(hi,X[i][f])}if(lo===hi)return{n:rows.length};const s=lo+R()*(hi-lo);return{f,s,l:build(rows.filter(i=>X[i][f]<s),d+1),r:build(rows.filter(i=>X[i][f]>=s),d+1)}};
+  const path=(x,t,d)=>t.l?path(x,x[t.f]<t.s?t.l:t.r,d+1):d+c(t.n);
+  const forest=Array.from({length:trees},()=>build(Array.from({length:psi},()=>R()*X.length|0),0));
+  return X.map(x=>2**(-forest.reduce((a,t)=>a+path(x,t,0),0)/trees/c(psi)));
+}
+const TN={T1:'時間差異常',T2:'跨供應商重複宣告',T3:'歸屬比例突變',T4:'碎片化拆分'};
+function runAi(seed){
+  const R=rng(seed*7919),g=()=>Math.sqrt(-2*Math.log(R()+1e-9))*Math.cos(6.2832*R()),D=[];
+  for(let s=0;s<80;s++){const base=.35+R()*.35;for(let k=0;k<12;k++)D.push({sup:'S-'+String(s+1).padStart(3,'0'),gap:Math.max(2,Math.exp(3+.5*g())),ratio:Math.min(.9,Math.max(.1,base+.06*g())),cust:2+(R()*5|0),ovl:R()*.12,y:null})}
+  for(let i=0;i<56;){const d=D[R()*D.length|0];if(d.y)continue;const t='T'+(i%4+1);d.y=t;i++;
+    if(t==='T1')d.gap=R()<.5?R()*1.6:140+R()*160; if(t==='T2')d.ovl=.22+R()*.5; if(t==='T3')d.ratio=.84+R()*.16; if(t==='T4')d.cust=8+(R()*14|0)}
+  const F=['歸屬時間差','歸屬／註銷比例','客戶數','跨供應商重複度'],X=D.map(d=>[Math.log(d.gap+1),d.ratio,Math.log(d.cust),d.ovl]);
+  const sc=iforest(X,R); const mu=F.map((_,j)=>X.reduce((a,x)=>a+x[j],0)/X.length),sd=F.map((_,j)=>Math.sqrt(X.reduce((a,x)=>a+(x[j]-mu[j])**2,0)/X.length));
+  D.forEach((d,i)=>{d.if=sc[i];d.rule=d.gap<1||d.gap>180;d.score=Math.min(.99,sc[i]+(d.rule?.12:0));d.z=X[i].map((v,j)=>(v-mu[j])/sd[j])});
+  const k=Math.round(D.length*.06),top=[...D].sort((a,b)=>b.score-a.score).slice(0,k),tp=top.filter(d=>d.y).length;
+  top.forEach(d=>d.alert=true);
+  const rec=t=>top.filter(d=>d.y===t).length+'／'+D.filter(d=>d.y===t).length;
+  const px=d=>40+Math.min(1,Math.log(d.gap+1)/6)*440,py=d=>230-d.ratio*210;
+  $('#ai').innerHTML=`<div class="kpis" style="margin-bottom:16px"><div class="kpi"><span class="mute">宣告事件</span><b>${D.length}</b>80 家 × 12 次</div><div class="kpi"><span class="mute">警示名額 6%</span><b>${k}</b>稽核只看這些</div><div class="kpi"><span class="mute">Precision</span><b>${(tp/k*100).toFixed(0)}%</b>本次種子</div><div class="kpi"><span class="mute">Recall</span><b>${(tp/56*100).toFixed(0)}%</b>注入異常 56 筆</div></div>
+  <div class="grid ai"><div class="card"><h2>風險分布（橫軸：歸屬時間差；縱軸：歸屬／註銷比例）</h2>
+   <svg viewBox="0 0 500 260" role="img" aria-label="風險散布圖"><line x1="40" y1="230" x2="480" y2="230" stroke="#ccc"/><line x1="40" y1="20" x2="40" y2="230" stroke="#ccc"/>
+   ${D.map(d=>`<circle cx="${px(d).toFixed(1)}" cy="${py(d).toFixed(1)}" r="${d.alert?4:2.2}" fill="${d.alert?'#a8843f':'#cfc8ba'}" ${d.y?'stroke="#9c2f1f" stroke-width="1.2"':''}/>`).join('')}
+   <text x="260" y="254" font-size="11" text-anchor="middle" fill="#6f6a62">時間差（對數） →</text></svg>
+   <div class="lg"><span><i style="background:#a8843f"></i>模型警示</span><span><i style="background:#fff;border:1.5px solid #9c2f1f"></i>實際注入的異常</span><span><i style="background:#cfc8ba"></i>一般事件</span></div>
+   <div class="ret">各情境召回：${Object.keys(TN).map(t=>`${TN[t]} ${rec(t)}`).join('｜')}</div></div>
+  <div class="card"><h2>警示清單（風險最高的前 12 筆）</h2><div class="tblw"><table><tr><th>供應商（假名）</th><th>風險分數</th><th>主要偏離特徵</th><th>觸發</th><th>實際情境</th></tr>
+   ${top.slice(0,12).map(d=>{const j=d.z.map((z,i)=>[Math.abs(z),i]).sort((a,b)=>b[0]-a[0])[0][1];return `<tr><td>${d.sup}</td><td><b>${d.score.toFixed(2)}</b></td><td>${F[j]} ${d.z[j]>0?'偏高':'偏低'}（${d.z[j].toFixed(1)}σ）</td><td><span class="tag ${d.rule?'warn':''}">${d.rule?'規則門檻':'孤立森林'}</span></td><td>${d.y?TN[d.y]:'<span class="mute">誤報</span>'}</td></tr>`}).join('')}</table></div>
+   <p class="mute" style="margin-top:8px">偏離度以標準差表示（非 SHAP；正式版以 SHAP 說明特徵貢獻）。「實際情境」欄僅因資料為合成才可得知。</p></div></div>`;
+}
+
+// ---- 啟動：產生機關金鑰；?run=act1,act2,fails&view=verify 可直接重現狀態 ----
+(async()=>{
+  for(const r of['MOENV','TCX','ATTACKER'])K[r]=await crypto.subtle.generateKey({name:'ECDSA',namedCurve:'P-256'},false,['sign','verify']);
+  stepBtns($('#steps1'),ACT1);stepBtns($('#steps2'),ACT2);stepBtns($('#fails'),FAILS);render();
+  const q=new URLSearchParams(location.search),r=(q.get('run')||'').split(',');
+  if(r.includes('act1'))await act(ACT1); if(r.includes('act2'))await act(ACT2); if(r.includes('fails'))await act(FAILS);
+  view(q.get('view')||'admin');
+  // 自我檢查（?run=act1,act2,fails 時）：七個失敗案例必須全部被拒，且不改變歸屬總量
+  if(r.includes('fails')){const no=S.events.filter(e=>e.err).length;console.assert(no===8&&S.rets['RET-001'].attributed===60,'規則引擎自我檢查失敗',no)}
+  window.app={S,run,act,view,ACT1,ACT2,FAILS,ready:true};
+})();
+</script>
+</body>
+</html>

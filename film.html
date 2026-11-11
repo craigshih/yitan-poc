@@ -1,0 +1,213 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<title>一碳究竟｜企劃簡介短片（腳本頁）</title>
+<!-- 錄影用腳本頁：固定 1920×1080，不是網站，不做響應式。?preview=1 可在瀏覽器直接播放。 -->
+<style>
+:root{--ink:#14110f;--amber:#a8843f;--teal:#1f4d3a;--bg:#f4f1ea;--red:#9c2f1f;--mute:#6f6a62}
+*{box-sizing:border-box}
+body{margin:0;width:1920px;height:1080px;overflow:hidden;background:var(--bg);color:var(--ink);font-family:"PingFang TC","Noto Sans TC",sans-serif}
+.sc{position:absolute;left:0;top:0;width:1920px;height:960px;opacity:0;transition:opacity .5s;pointer-events:none;padding:70px 120px}
+.sc.on{opacity:1}
+.dark{background:var(--ink);color:#fff}
+[data-p]{opacity:0;transform:translateY(28px);transition:opacity .7s,transform .7s}
+[data-p].show{opacity:1;transform:none}
+#cap{position:absolute;left:0;bottom:0;width:1920px;height:120px;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-size:44px;font-weight:600;letter-spacing:1px;z-index:20}
+#cap span{transition:opacity .25s}
+#prog{position:absolute;left:0;top:0;height:6px;background:var(--amber);z-index:30;transition:width .6s linear}
+#tag{position:absolute;right:28px;top:20px;z-index:30;font-size:20px;color:#7a5210;background:#fdf1dc;padding:6px 16px;border-radius:99px}
+h1{font-size:88px;margin:0 0 26px;line-height:1.25}
+
+.kick{font-size:34px;color:var(--amber);font-weight:600;margin-bottom:18px}
+.src{position:absolute;left:120px;bottom:30px;font-size:24px;opacity:.65}
+.row{display:flex;gap:36px;align-items:stretch}
+.card{background:#fff;border:2px solid #e6e2d8;border-radius:24px;padding:40px 44px;font-size:36px;line-height:1.55;flex:1}
+.card b{display:block;font-size:44px;margin-bottom:12px}
+#prob .card{font-size:32px;padding:30px 36px}#prob .card b{font-size:40px;margin-bottom:6px}#prob .pill{margin-top:10px!important}
+.pill{display:inline-block;padding:8px 22px;border-radius:99px;font-size:28px;font-weight:600}
+.pill.ok{background:#e3f2ed;color:var(--teal)}.pill.no{background:#fbe9e5;color:var(--red)}.pill.am{background:#fdf1dc;color:#8a5a06}
+.big{font-size:260px;font-weight:800;line-height:1;color:var(--amber)}
+.token{width:230px;height:230px;border-radius:50%;background:var(--amber);color:#fff;font-size:64px;font-weight:800;display:grid;place-items:center;box-shadow:0 0 0 18px rgba(168,132,63,.2)}
+.node{flex:1;text-align:center;font-size:36px;font-weight:700;position:relative}
+.node i{display:grid;place-items:center;width:92px;height:92px;margin:0 auto 14px;border-radius:50%;background:#e3f2ed;border:4px solid var(--teal);font-style:normal;font-size:38px;color:var(--teal)}
+.node.am i{background:#fdf1dc;border-color:var(--amber);color:#8a5a06}
+.node small{display:block;font-size:26px;font-weight:400;color:var(--mute);margin-top:4px}
+.node:not(:last-child):after{content:"";position:absolute;left:calc(50% + 56px);top:46px;width:calc(100% - 112px);height:4px;background:var(--amber)}
+#fw{position:absolute;left:0;top:0;border:0;transform-origin:0 0;background:var(--bg);transition:left .01s}
+#cursor{position:absolute;z-index:15;width:34px;height:34px;border-radius:50%;background:rgba(168,132,63,.55);border:3px solid #fff;box-shadow:0 2px 10px rgba(0,0,0,.35);left:900px;top:500px;transition:left .45s,top .45s,transform .15s;opacity:0}
+#toast{position:absolute;z-index:16;left:50%;top:330px;transform:translate(-50%,20px);background:#fff;border:5px solid var(--red);color:var(--red);border-radius:24px;padding:26px 44px;font-size:44px;font-weight:700;max-width:1500px;text-align:center;opacity:0;transition:.35s;box-shadow:0 20px 60px rgba(20,17,15,.3)}
+#toast.on{opacity:1;transform:translate(-50%,0)}#toast small{display:block;font-size:26px;color:var(--mute);font-weight:500;margin-bottom:6px}
+#side{position:absolute;left:860px;top:150px;width:940px;z-index:12}
+#side li{font-size:36px;margin-bottom:26px;line-height:1.5}
+#stat{position:absolute;z-index:14;right:60px;top:90px;width:760px;background:#fff;border:4px solid var(--ink);border-radius:22px;padding:26px 34px;box-shadow:0 20px 60px rgba(20,17,15,.3);opacity:0;transform:translateY(20px);transition:.5s}
+#stat.on{opacity:1;transform:none}#stat table{width:100%;border-collapse:collapse;font-size:28px}#stat td,#stat th{padding:8px 6px;text-align:right;border-bottom:1px solid #e6e2d8}#stat td:first-child,#stat th:first-child{text-align:left}
+.bars{display:flex;gap:70px;align-items:flex-end;height:330px;margin-top:20px}
+.bar{width:200px;text-align:center;font-size:30px;font-weight:700}.bar div{background:var(--teal);border-radius:12px 12px 0 0;height:0;transition:height 1s}.bar.neg div{background:var(--red)}
+h1,.big,.kick,.node,.card b,.token{font-family:"Songti TC","Noto Serif TC",serif;letter-spacing:.04em}
+.card,.pill,#toast,#stat,.bar div{border-radius:0!important}
+.pill{background:none!important;border:2px solid currentColor}
+.card{background:#fbf9f4;border:1px solid #d8d2c4}
+.kick{letter-spacing:.25em}
+</style>
+</head>
+<body>
+<div id="prog" style="width:0"></div><div id="tag">PoC 模擬資料</div>
+
+<section class="sc dark" id="hook">
+  <div class="row" style="align-items:center;height:100%">
+    <div style="flex:1.1">
+      <div class="kick" data-p="1">臺灣碳費　2025 年 1 月 1 日上路</div>
+      <div data-p="1"><span class="big" id="cnt">0</span><span style="font-size:80px;font-weight:700"> 家企業</span></div>
+      <div data-p="1" style="font-size:36px;margin-top:22px;opacity:.85">約 500 座廠納入徵收｜一般費率 NT$300／噸</div>
+    </div>
+    <div style="flex:.9;text-align:center">
+      <div data-p="2" class="token" style="margin:0 auto 40px">1 噸</div>
+      <div data-p="2" class="row" style="justify-content:center;transition-delay:.4s"><span class="pill am" style="font-size:32px">向品牌 A 宣告碳中和</span><span class="pill am" style="font-size:32px">向品牌 B 宣告碳中和</span></div>
+      <div data-p="2" style="font-size:54px;font-weight:800;color:#ff8e78;margin-top:36px;transition-delay:.9s">同一噸，宣告兩次？</div>
+    </div>
+  </div>
+  <div class="src">資料來源：公視新聞網（2025/12/19 發布，2026/1/8 更新）</div>
+</section>
+
+<section class="sc" id="prob" style="--cf:32px">
+  <div class="kick">問題</div><h1>註銷之後的那一段，沒有人看得見</h1>
+  <div class="row" style="margin-top:30px">
+    <div class="card" data-p="1"><b>官方登記簿</b>註銷對象：綠光電子<br>數量：60 噸｜用途：已指定<br><span class="pill ok" style="margin-top:14px">✓ 有官方紀錄</span></div>
+    <div style="font-size:80px;align-self:center;color:var(--amber)" data-p="1">→</div>
+    <div class="card" data-p="1" style="transition-delay:.5s;border-style:dashed"><b>分給哪些客戶？</b>Excel 分配表、PDF 註銷證明、Email 往返<br><span class="pill no" style="margin-top:14px">？ 外界無法驗證是否重複</span></div>
+  </div>
+  <div class="row" style="margin-top:44px">
+    <div class="card" data-p="2" style="text-align:center"><b>品牌客戶</b>這 20 噸有沒有也算給別家？</div>
+    <div class="card" data-p="2" style="text-align:center;transition-delay:.25s"><b>稽核</b>宣告對應哪一筆註銷？</div>
+    <div class="card" data-p="2" style="text-align:center;transition-delay:.5s"><b>銀行</b>綠色授信的 KPI 可信嗎？</div>
+  </div>
+  <div class="src" data-p="2">約 4,400 萬噸先期額度僅得協議交易，流向最難追蹤（中央社 2026/9/1）</div>
+</section>
+
+<section class="sc" id="sol">
+  <div class="kick" data-p="1">解決方案</div>
+  <h1 data-p="1">一碳究竟<span style="font-size:44px;font-weight:500;margin-left:24px">碳權全生命週期鏈上存證 × AI 防漂綠預警</span></h1>
+  <div class="row" style="margin-top:90px;gap:0" id="nodes"></div>
+  <div class="row" style="margin-top:110px;align-items:center" data-p="3">
+    <span class="pill am" style="font-size:34px">交易辦法第 10 條</span><span class="pill am" style="font-size:34px">第 26 條</span><span class="pill am" style="font-size:34px">第 27 條</span>
+    <span style="font-size:60px;color:var(--amber)">→</span>
+    <div class="card" style="background:var(--ink);color:#fff;border:0"><b>智能合約｜法規即程式碼</b>違規操作在合約層就無法執行</div>
+  </div>
+</section>
+
+<section class="sc" id="demo" style="padding:0">
+  <iframe id="fw" src="index.html" title="PoC 互動原型"></iframe>
+  <ul id="side" hidden>
+    <div class="kick">公開查驗頁（手機）</div>
+    <li>掃碼即看，<b>免登入、免錢包</b></li>
+    <li>回溯到<b>核發文號、序號範圍、查驗機構</b></li>
+    <li>驗證碼在<b>自己的瀏覽器</b>比對，不傳到伺服器</li>
+    <li>鏈上只有<b>雜湊承諾</b>，客戶名單不公開</li>
+  </ul>
+  <div id="stat"><div class="kick" style="margin-bottom:8px">AI-2 偵測結果（企劃書表 11）</div>
+    <table><tr><th>方法</th><th>ROC-AUC</th><th>PR-AUC</th></tr><tr><td>孤立森林</td><td>0.972</td><td>0.696</td></tr><tr><td>人工門檻規則</td><td>0.961</td><td>0.517</td></tr><tr><td><b>孤立森林＋規則</b></td><td><b>0.987</b></td><td><b>0.794</b></td></tr></table>
+    <div style="font-size:21px;color:var(--mute);margin-top:10px">合成資料 960 筆、20 組隨機種子平均；不代表真實效能</div></div>
+  <div id="cursor"></div><div id="toast"></div>
+</section>
+
+<section class="sc" id="split">
+  <div class="kick">AI 技術應用</div><h1>規則在鏈上，AI 在鏈外</h1>
+  <div class="row" style="margin-top:50px">
+    <div class="card" data-p="1" style="border-color:var(--ink)"><b>智能合約：決定「能不能做」</b>序號唯一、只移轉一次、歸屬不超額<br>可重現、可究責</div>
+    <div class="card" data-p="1" style="border-color:var(--amber);transition-delay:.6s"><b>AI：決定「值不值得查」</b>文件擷取比對、異常預警、有出處的查驗助理<br>只提示，不攔截、不認定違規</div>
+  </div>
+</section>
+
+<section class="sc" id="biz">
+  <div class="kick">商業模式</div><h1>賣的是證據與信任，不是碳權</h1>
+  <div class="row" data-p="1" style="font-size:30px">
+    <div class="card" style="font-size:30px;padding:30px"><b style="font-size:36px">供應商訂閱</b>NT$12 萬／家／年</div><div class="card" style="font-size:30px;padding:30px"><b style="font-size:36px">品牌／稽核查驗</b>NT$6 萬／家／年</div><div class="card" style="font-size:30px;padding:30px"><b style="font-size:36px">碳交所中台授權</b>NT$300 萬／年</div><div class="card" style="font-size:30px;padding:30px"><b style="font-size:36px">查驗結果 API</b>NT$60 萬／年</div>
+  </div>
+  <div class="row" style="margin-top:44px;align-items:flex-end">
+    <div class="card" data-p="1" style="transition-delay:.5s;flex:1.1"><b>B2B2B 網路效應</b>1 家錨定客戶（國際品牌或銀行）<br>→ 約 50 家供應商因查核要求導入<br><span class="pill ok" style="margin-top:14px">零撮合・零金流・不收佣金</span></div>
+    <div data-p="2" style="flex:1"><div style="font-size:30px;font-weight:700">三年累計損益試算（新臺幣萬元）</div>
+      <div class="bars"><div class="bar neg">−150<div data-h="70"></div>第 1 年</div><div class="bar">120<div data-h="56"></div>第 2 年</div><div class="bar">710<div data-h="250"></div>第 3 年</div></div></div>
+  </div>
+  <div class="src">定價與家數為團隊試算假設，非預測；待試點訪談驗證</div>
+</section>
+
+<section class="sc dark" id="end" style="text-align:center;padding-top:200px">
+  <div data-p="1" class="kick">PROOF OF CARBON</div>
+  <h1 data-p="1" style="font-size:120px;margin-top:30px">一碳究竟</h1>
+  <div data-p="1" style="font-size:64px;color:var(--amber);font-weight:700;transition-delay:.5s">一噸，只被宣告一次。</div>
+  <div data-p="1" style="font-size:32px;margin-top:70px;opacity:.85;transition-delay:1s">碳克車｜政治大學　·　2026 AI 金融科技創新創意競賽</div>
+  <div class="src" style="left:0;width:100%">所有畫面均為 PoC 模擬資料，不代表真實碳權發行、交易或法律權利</div>
+</section>
+
+<div id="cap"><span></span></div>
+
+<script>
+const $=s=>document.querySelector(s),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+$('#nodes').innerHTML=[['專案註冊','環境部'],['核發','環境部'],['上架','碳交所'],['成交移轉','碳交所'],['註銷','環境部',1],['用途公告','環境部',1],['歸屬','碳交所',1]]
+  .map((n,i)=>`<div class="node ${n[2]?'am':''}" data-p="2" style="transition-delay:${i*.45}s"><i>${i+1}</i>${n[0]}<small>${n[1]}簽章</small></div>`).join('');
+const fw=$('#fw'); let app,fd;
+function scene(id,p=1){$('#tag').hidden=id==='demo';document.querySelectorAll('.sc').forEach(s=>s.classList.toggle('on',s.id===id));$('#'+id).querySelectorAll('[data-p]').forEach(e=>e.classList.toggle('show',+e.dataset.p<=p))}
+function frame(w,h,scale,left,top,phone){Object.assign(fw.style,{width:w+'px',height:h+'px',transform:`scale(${scale})`,left:left+'px',top:top+'px',borderRadius:phone?'28px':'0',boxShadow:phone?'0 0 0 10px #14110f,0 30px 80px rgba(20,17,15,.35)':'none'});fw._s=scale;fw._l=left;fw._t=top}
+const desk=()=>{frame(1280,640,1.5,0,0);$('#side').hidden=true};
+async function click(sel){ // 把假游標移到原型裡的按鈕上再觸發
+  const el=fd.querySelector(sel); el.scrollIntoView({block:'center'}); await sleep(120); const r=el.getBoundingClientRect(),c=$('#cursor');
+  c.style.opacity=1;c.style.left=fw._l+(r.x+r.width*.75)*fw._s-17+'px';c.style.top=fw._t+(r.y+r.height/2)*fw._s-17+'px';
+  await sleep(520);c.style.transform='scale(.7)';el.click();await sleep(160);c.style.transform='none';
+}
+const steps=async(ids,dur)=>{for(const i of ids){await click(`[data-s=${i}]`);await sleep(Math.max(300,dur*1000/ids.length-700))}};
+function toast(){const e=app.S.events.find(e=>e.err);$('#toast').innerHTML=`<small>✕ 規則引擎拒絕：${e.label}</small>${e.err}`;$('#toast').classList.add('on')}
+const untoast=()=>$('#toast').classList.remove('on');
+
+// 每句旁白一個 cue：[字幕, 動作(dur 秒)]
+const CUES=[
+ ['碳費上路：281 家企業開始為每一噸碳付費',()=>{scene('hook',1);let n=0;const t=setInterval(()=>{n=Math.min(281,n+7);$('#cnt').textContent=n;if(n>=281)clearInterval(t)},40)}],
+ ['但註銷之後，同一噸碳權可能被宣告兩次',()=>scene('hook',2)],
+ ['官方登記只記到註銷；分給誰，只剩 Excel 與 PDF',()=>scene('prob',1)],
+ ['品牌、稽核與銀行，都無從獨立驗證',()=>scene('prob',2)],
+ ['一碳究竟：把官方紀錄代幣化上鏈',()=>scene('sol',1)],
+ ['七個狀態，每一步都由權責機關簽章',()=>scene('sol',2)],
+ ['法規即程式碼：交易辦法第 10、26、27 條寫進合約',()=>scene('sol',3)],
+ ['實機操作：我們的 PoC 互動原型',()=>{desk();scene('demo')}],
+ ['環境部註冊專案、核發 1,000 噸；碳交所上架',d=>steps(['A1','A2','A3'],d)],
+ ['綠光電子買入 100 噸、註銷 60 噸，並公告用途',d=>steps(['A4','A5','A6'],d)],
+ ['歸屬 B 公司 40 噸、C 公司 20 噸；鏈上只留雜湊承諾',d=>steps(['A7','A8'],d*.6)],
+ ['想再多歸屬 10 噸？合約直接拒絕',async()=>{fd.querySelector('#fails').scrollIntoView({block:'center'});await sleep(300);await click('[data-s=F2]');await sleep(250);toast()}],
+ ['碳費扣除後又向品牌宣告？一噸兩用，同樣被擋下',async()=>{untoast();await click('[data-s=F7]');await sleep(350);toast()}],
+ ['偽造簽章、再次轉售、先期額度上架……七種違規全部無法執行',async d=>{untoast();await steps(['F3','F5','F4','F1','F6'],d)}],
+ ['掃碼免登入，回溯到核發文號與查驗機構',async d=>{$('#cursor').style.opacity=0;frame(400,720,1.3,220,12,true);$('#side').hidden=false;app.view('verify');await sleep(d*450);fd.querySelectorAll('#verify .card')[2].scrollIntoView({behavior:'smooth',block:'center'})}],
+ ['輸入驗證碼，在自己的瀏覽器比對承諾值',async()=>{fd.querySelector('#vcode').scrollIntoView({behavior:'smooth',block:'center'});await sleep(700);const code=app.S.rets['RET-001'].commits[0].code,inp=fd.querySelector('#vcode');for(let i=1;i<=code.length;i++){inp.value=code.slice(0,i);await sleep(90)}await click('#vbtn')}],
+ ['規則管得了的交給合約；管不了的交給 AI',()=>{$('#cursor').style.opacity=0;scene('split',1)}],
+ ['孤立森林＋規則：從時間差、比例與重複度找出異常',async()=>{desk();app.view('ai');scene('demo');await sleep(600);fw.contentWindow.scrollTo({top:170,behavior:'smooth'})}],
+ ['合成資料 PR-AUC 0.794；稽核只看風險最高的 6%',()=>$('#stat').classList.add('on')],
+ ['不碰撮合與金流；一家錨定客戶，帶動整條供應鏈',()=>{$('#stat').classList.remove('on');scene('biz',1)}],
+ ['試算第 2 年損益兩平',()=>{scene('biz',2);document.querySelectorAll('.bar div').forEach(b=>b.style.height=b.dataset.h+'px')}],
+ ['一碳究竟｜一噸，只被宣告一次',()=>scene('end',1)]
+];
+window.filmCues=[];
+window.filmStart=()=>{
+  const t0=Date.now()/1000;
+  (async()=>{
+    await sleep(600);
+    for(let i=0;i<CUES.length;i++){
+      const d=DUR[i]??4;
+      filmCues.push(Date.now()/1000-t0);
+      $('#cap span').textContent=CUES[i][0];$('#prog').style.width=(i+1)/CUES.length*100+'%';
+      CUES[i][1](d);
+      await sleep(d*1000+650);
+    }
+    await sleep(2200);window.filmDone=true;
+  })();
+  return t0;
+};
+let DUR=[];
+(async()=>{
+  try{DUR=await (await fetch('timing.json')).json()}catch{}
+  await new Promise(r=>{const t=setInterval(()=>{if(fw.contentWindow.app?.ready){clearInterval(t);r()}},100)});
+  app=fw.contentWindow.app;fd=fw.contentDocument;desk();scene('hook',0);
+  window.filmReady=true;
+  if(new URLSearchParams(location.search).has('preview'))filmStart();
+})();
+</script>
+</body>
+</html>

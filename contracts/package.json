@@ -1,0 +1,1 @@
+{"name":"yitan-contracts","private":true,"type":"module","scripts":{"test":"node run.mjs"},"dependencies":{"@openzeppelin/contracts":"^5.0.2","ethers":"^6.17.0","ganache":"^7.9.2","solc":"^0.8.26"}}
