@@ -106,7 +106,7 @@ h1,.big,.kick,.node,.card b,.token{font-family:"Songti TC","Noto Serif TC",serif
     <li>鏈上只有<b>雜湊承諾</b>，客戶名單不公開</li>
   </ul>
   <div id="stat"><div class="kick" style="margin-bottom:8px">AI-2 偵測結果（企劃書表 11）</div>
-    <table><tr><th>方法</th><th>ROC-AUC</th><th>PR-AUC</th></tr><tr><td>孤立森林</td><td>0.972</td><td>0.696</td></tr><tr><td>人工門檻規則</td><td>0.961</td><td>0.517</td></tr><tr><td><b>孤立森林＋規則</b></td><td><b>0.987</b></td><td><b>0.794</b></td></tr></table>
+    <table><tr><th>方法</th><th>ROC-AUC</th><th>PR-AUC</th></tr><tr><td>孤立森林</td><td>0.977</td><td>0.816</td></tr><tr><td>人工門檻規則</td><td>0.830</td><td>0.156</td></tr><tr><td><b>孤立森林＋規則</b></td><td><b>0.984</b></td><td><b>0.849</b></td></tr></table>
     <div style="font-size:21px;color:var(--mute);margin-top:10px">合成資料 960 筆、20 組隨機種子平均；不代表真實效能</div></div>
   <div id="cursor"></div><div id="toast"></div>
 </section>
@@ -179,7 +179,7 @@ const CUES=[
  ['輸入驗證碼，在自己的瀏覽器比對承諾值',async()=>{fd.querySelector('#vcode').scrollIntoView({behavior:'smooth',block:'center'});await sleep(700);const code=app.S.rets['RET-001'].commits[0].code,inp=fd.querySelector('#vcode');for(let i=1;i<=code.length;i++){inp.value=code.slice(0,i);await sleep(90)}await click('#vbtn')}],
  ['規則管得了的交給合約；管不了的交給 AI',()=>{$('#cursor').style.opacity=0;scene('split',1)}],
  ['孤立森林＋規則：從時間差、比例與重複度找出異常',async()=>{desk();app.view('ai');scene('demo');await sleep(600);fw.contentWindow.scrollTo({top:170,behavior:'smooth'})}],
- ['合成資料 PR-AUC 0.794；稽核只看風險最高的 6%',()=>$('#stat').classList.add('on')],
+ ['合成資料 PR-AUC 0.849；稽核只看風險最高的 6%',()=>$('#stat').classList.add('on')],
  ['不碰撮合與金流；一家錨定客戶，帶動整條供應鏈',()=>{$('#stat').classList.remove('on');scene('biz',1)}],
  ['試算第 2 年損益兩平',()=>{scene('biz',2);document.querySelectorAll('.bar div').forEach(b=>b.style.height=b.dataset.h+'px')}],
  ['一碳究竟｜一噸，只被宣告一次',()=>scene('end',1)]
